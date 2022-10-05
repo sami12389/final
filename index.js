@@ -16,7 +16,11 @@ const skills = [
     "GITHUB"
 ];
 
+//my github url
+const githubUrl = "https://api.github.com/users/sami12389/repos"
+
 //variables
+const submitBtn = document.querySelector(".btnSubmit")
 const bars = document.querySelector(".bars");
 const navContainer = document.querySelector(".navContainer");
 const navList = document.querySelectorAll(".navList")
@@ -29,9 +33,11 @@ const submit = document.querySelector(".btnSubmit");
 const messageList =  document.querySelector(".messageList");
 const messageContainer =  document.querySelector(".messageContainer");
 const copyright = document.querySelector(".copyright");
+const projectCardContainer = document.querySelector(".projectCardContainer");
 //event listeners
 window.addEventListener("DOMContentLoaded", displaySkills)
 window.addEventListener("DOMContentLoaded", showCopyright)
+window.addEventListener("DOMContentLoaded", showProjectRepo)
 bars.addEventListener("click", showMenu)
 form.addEventListener("submit", submitMessage);
 
@@ -61,9 +67,27 @@ function displaySkills(){
 }
 
 
+//fetch repos from Github
+async function showProjectRepo(){
+   await fetch(githubUrl)
+  .then((response)=>response.json())
+    .then((responseJSON)=>{
+        responseJSON.map((projectItem)=>{
+        let projectList = document.createElement("a")
+        const attr = document.createAttribute("href");
+        attr.value = projectItem.html_url
+        projectList.setAttributeNode(attr);
+        projectList.classList.add("projectItem")
+        projectList.innerText = projectItem.name;
+        projectCardContainer.appendChild(projectList);
+        })
+    })
+}
+
+
 function submitMessage(e){
     e.preventDefault();
-    if(name.value != "" && email.value !== "", text.value !== ""){
+    if(name.value !== "" && email.value !== "" && text.value !== ""){
     const messageSection = document.createElement("section")
     const messageId = new Date().getTime().toString();
     const attr = document.createAttribute("data-id");
@@ -71,11 +95,17 @@ function submitMessage(e){
     messageSection.setAttributeNode(attr);
     messageSection.classList.add("messageSection");
     messageSection.innerHTML = `
+    <div class = "mainMessageContainer">
+    <div class = "messageSection">
     <h2>${name.value}</h2>
-    <h3>${email.value}</h3>
+    <a href = "mailto: ${email.value}">${email.value}</a>
     <p>${text.value}</p>
-    <button type = "button" class = "remove">Remove</button>
+    </div>
+    <div class = "btnContainer">
+     <button type = "button" class = "remove">Remove</button>
     <button type = "button" class = "edit">Edit</button>
+    </div>
+    </div>
     `
     messageList.append(messageSection);
     const removeMessage = messageSection.querySelector(".remove")
@@ -87,30 +117,32 @@ function submitMessage(e){
     }else if(name.value == "" || email.value == "" || text.value == ""){
         alert("Missing fields, please fill out missing information.")
         setBackToDefault();
-        messageList.forEach(function(message){
-            messageList.removeChild(message);
-        })
     }
    
 }
 
+
 function setBackToDefault(){
-    name.value = ""
-    email.value = ""
-    text.value = ""
+    name.value = "";
+    email.value = "";
+    text.value = "";
+    editFlag = false;
+}
+
+function editFunction(e){
+    const item = e.currentTarget.parentElement.parentElement;
+    console.log(item);
+    const itemName = item.firstElementChild.firstElementChild;
+    const itemMessage = item.firstElementChild.lastElementChild;
+    name.value = itemName.innerText;
+    text.value = itemMessage.innerText;
 }
 
 
 function removeItem(e){
    const item = e.currentTarget.parentElement;
-   const id = item.dataset.id;
    messageList.removeChild(item);
 }
-
-function editFunction(e){
-    const item = e.target.parentElement;
-}
-
 
 
 

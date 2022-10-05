@@ -22,7 +22,11 @@ body{
 
 a{
     text-decoration: none;
-    color: inherit;
+    color: red;
+}
+
+a:hover{
+    text-decoration: underline;
 }
 
 /* nav section */
@@ -476,6 +480,27 @@ small{
 
 .copyright{
     font-size: 20px;
+}
+
+.projectItem{
+    color: white;
+    padding: 30px;
+    margin: 30px;
+    border: 2px solid white;
+    list-style-type: none;
+    width: 200px;
+    height:100px;
+    text-transform: uppercase;
+}
+
+.btnContainer{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.btnContainer button{
+    margin: 10px;
 }
 
 
